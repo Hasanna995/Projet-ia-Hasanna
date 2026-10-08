@@ -3,26 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Projet IA</title>
+<title>Le Fournil des Monts — Réponse aux avis</title>
 <style>
   body { font: 17px/1.5 system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; }
   textarea, input, button { font: inherit; width: 100%; box-sizing: border-box; margin: .3rem 0 .8rem; padding: .6rem; }
   button { cursor: pointer; }
   #sortie { white-space: pre-wrap; background: #f3f3f0; padding: 1rem; border-radius: 6px; min-height: 3rem; }
   .meta { color: #666; font-size: .85rem; }
+  .aide { color: #666; font-size: .9rem; margin-top: -.5rem; margin-bottom: .8rem; }
 </style>
 </head>
 <body>
-  <h1>[Nom de votre application]</h1>
-  <p>[Une phrase : à qui elle sert, et pour quoi faire.]</p>
+  <h1>Le Fournil des Monts — Réponse aux avis</h1>
+  <p>Cet outil aide la gérante à répondre aux avis clients de la boulangerie : collez un avis avec sa note, l'application propose une réponse courtoise et bornée, à relire avant publication.</p>
 
   <label for="code">Code d'accès</label>
   <input id="code" type="password" autocomplete="off">
 
-  <label for="texte">Votre demande</label>
-  <textarea id="texte" rows="6" maxlength="2000"></textarea>
+  <label for="texte">Avis à traiter (note + texte)</label>
+  <textarea id="texte" rows="6" maxlength="2000" placeholder="Exemple : Note : 2/5 — Baguette achetée à 18 h, déjà dure. Dommage, avant c'était bien meilleur."></textarea>
+  <p class="aide">Format attendu : « Note : X/5 — » suivi du texte de l'avis.</p>
 
-  <button id="envoyer">Envoyer</button>
+  <button id="envoyer">Proposer une réponse</button>
   <div id="sortie" aria-live="polite"></div>
   <p class="meta" id="meta"></p>
 
@@ -40,7 +42,7 @@ $("envoyer").addEventListener("click", async () => {
     });
     const d = await r.json();
     if (!r.ok) throw new Error(d.detail || r.status);
-    $("sortie").textContent = d.reponse;          // textContent : jamais innerHTML
+    $("sortie").textContent = d.reponse;
     $("meta").textContent = `${d.modele} · ${d.duree_s} s`;
   } catch (e) {
     $("sortie").textContent = "Erreur : " + e.message;
