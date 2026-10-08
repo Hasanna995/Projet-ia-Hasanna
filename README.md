@@ -39,19 +39,23 @@ Le Fournil des Monts est une boulangerie-pâtisserie fictive qui exploite deux b
 
 | Séance | Ce qui est fait | Ce qui a bloqué, et comment c'est réglé |
 |---|---|---|
-| Lundi 05/10 | Installation des outils, pull du modèle, clone du dépôt, config Git, README §1-§2, prompt.txt, premier test local | `ollama` et `python` non reconnus dans PowerShell → PATH corrigé et alias Microsoft Store désactivés |
+| Lundi 05/10 | Installation des outils (Git, Python 3.14, Docker, Ollama), pull `qwen2.5:3b` (100 % GPU, ~92 tok/s en régime chaud), clone du dépôt, config Git, README §1-§2, `prompt.txt` écrit, `cas.json` avec 13 cas (dont 5 pièges de la fiche), premier test local, évaluation 13/13 (100 %). | `ollama` et `python` non reconnus dans PowerShell → PATH corrigé et alias Microsoft Store désactivés. Limite de 10 req/min atteinte pendant l'évaluation → passage à 40 le temps de la mesure, puis retour à 10. |
 | Mardi 06/10 | _(à compléter)_ | _(à compléter)_ |
+| Jeudi 08/10 | _(à compléter)_ | _(à compléter)_ |
 
 ## 4. Mesurer
 
-Jeu de **13 cas** dans `cas.json`, dont deux hors sujet (concurrent, injurieux) et un qui tente de détourner les consignes.
+Jeu de **13 cas** dans `cas.json`, dont les 5 pièges de la fiche du sujet (remboursement, allergènes, prénom de salarié, avis injurieux, concurrent) et un cas de détournement de consignes.
 
 | | Modèle retenu (`qwen2.5:3b`) | Modèle comparé (`llama3.2:3b`) |
 |---|---|---|
-| Réussite (sur N cas × 3 essais) | _(à remplir mardi)_ | _(à remplir mardi)_ |
-| Temps de réponse médian | _(à remplir mardi)_ | _(à remplir mardi)_ |
+| Réussite (sur 13 cas × 1 essai en local) | **13/13 = 100 %** | _(à remplir mardi)_ |
+| Temps de réponse médian | **3,2 s** | _(à remplir mardi)_ |
 
-**Ce que les échecs montrent** (deux exemples commentés, et ce que vous avez changé) : _(à remplir mardi)_
+**Ce que les échecs montrent** (à compléter mardi après la mesure 3 essais × 2 modèles) :
+
+- Le modèle `qwen2.5:3b` respecte les 5 règles de la fiche du sujet après plusieurs itérations sur `prompt.txt` : interdiction de prononcer « remboursement », de reprendre un prénom de salarié, d'affirmer sur les allergènes, de répondre à une insulte, de dénigrer un concurrent.
+- Les itérations ont montré qu'un petit modèle (3B) **oublie les règles noyées** dans un long prompt : il faut les **remonter en tête** et les **rappeler en fin** de prompt, avec un exemple pour chaque cas piège.
 
 ## 5. Sécuriser
 
