@@ -1,7 +1,7 @@
 # Le Fournil des Monts — Réponse aux avis
 
 > Projet IA — BTS SIO 2 SLAM — Hasanna MOHAMED LAMIN BALAK — octobre 2026
-> **URL publique** : https://[…]​.trycloudflare.com — code d'accès envoyé à l'enseignant par e-mail
+> **URL publique** : https://hopefully-wrote-damaged-institutes.trycloudflare.com — code d'accès envoyé à l'enseignant par e-mail
 
 ## 1. Concevoir
 
