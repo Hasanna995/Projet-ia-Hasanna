@@ -40,8 +40,8 @@ Le Fournil des Monts est une boulangerie-pâtisserie fictive qui exploite deux b
 | Séance | Ce qui est fait | Ce qui a bloqué, et comment c'est réglé |
 |---|---|---|
 | Lundi 05/10 | Installation des outils (Git, Python 3.14, Docker, Ollama), pull `qwen2.5:3b` (100 % GPU, ~92 tok/s en régime chaud), clone du dépôt, config Git, README §1-§2, `prompt.txt` écrit, `cas.json` avec 13 cas (dont 5 pièges de la fiche), premier test local, évaluation 13/13 (100 %). | `ollama` et `python` non reconnus dans PowerShell → PATH corrigé et alias Microsoft Store désactivés. Limite de 10 req/min atteinte pendant l'évaluation → passage à 40 le temps de la mesure, puis retour à 10. |
-| Mardi 06/10 | _(à compléter)_ | _(à compléter)_ |
-| Jeudi 08/10 | _(à compléter)_ | _(à compléter)_ |
+| Mardi 06/10 | Conteneurisation (`docker compose up -d --build`), app `healthy`, redémarrage automatique prouvé (`docker compose restart app` → healthy en 8 s). URL publique `https://hopefully-wrote-damaged-institutes.trycloudflare.com` récupérée via `docker compose logs tunnel`. Test 4G depuis mon téléphone : refus sans code, réponse avec `Hasanna2026`. Mesure comparative des 2 modèles sur l'URL publique (13 cas × 3 essais) : `qwen2.5:3b` = 97 % / 0,7 s ; `llama3.2:3b` = 90 % / 1,2 s. §4 rempli. | Docker Desktop restait bloqué sur « Starting the Docker Engine » → activation de Virtual Machine Platform puis installation de WSL 2 (`wsl --install`) → Docker démarre. Ajout de `host.docker.internal` dans `OLLAMA_URL` pour que le conteneur joigne Ollama sur Windows. |
+| Jeudi 08/10 | §5 Sécuriser complété avec les 3 preuves (`docker compose ps`, `git log --all --oneline -- .env`, cas 13 refusé). §7 Usage IA rempli. Rendu final poussé sur GitHub. | Rien de bloquant ce jour ; les itérations de la veille sur `prompt.txt` avaient déjà stabilisé les 13 cas sur `qwen2.5:3b`. |
 
 ## 4. Mesurer
 
@@ -100,3 +100,30 @@ cp .env.example .env      # puis remplir
 docker compose up -d --build
 docker compose ps
 docker compose logs tunnel
+
+## 7. Usage de l'IA pendant le projet
+
+### Ce que j'ai demandé à un assistant IA
+
+- **Aide à la rédaction du `prompt.txt`** : j'ai demandé une première version structurée (rôle, tâche, règles, format, exemples) puis plusieurs itérations pour mieux cadrer les cas pièges (remboursement, allergènes, prénom de salarié, injurieux, concurrent). J'ai gardé la structure et les règles, mais j'ai réécrit moi-même les exemples pour qu'ils collent aux données du sujet 4.
+- **Aide à la construction du `cas.json`** : j'ai demandé 13 cas dont les 5 pièges de la fiche. J'ai vérifié chaque cas par rapport à la fiche du sujet et supprimé les critères trop stricts (par exemple exiger « 16 h 30 » dans une réponse d'avis note 3, alors que la fiche ne l'impose pas).
+- **Aide au débogage Windows** : configuration du PATH (Git, Python), désactivation des alias Microsoft Store, activation de WSL 2 et de Virtual Machine Platform pour Docker Desktop. J'ai appliqué les commandes, compris à quoi elles servent, et documenté les étapes dans le §3.
+- **Aide à la structure du README** : j'ai demandé un squelette pour les 7 sections. J'ai rempli moi-même les mesures, les captures et les commentaires d'échecs, à partir des CSV produits par `evaluer.py`.
+
+### Ce que j'ai gardé, modifié ou refusé
+
+| Proposition | Décision | Raison |
+|---|---|---|
+| Structure initiale du `prompt.txt` (rôle / tâche / règles / format / exemples) | Gardé | Claire et efficace pour un petit modèle 3B |
+| Premier `cas.json` avec 13 cas | Modifié | J'ai assoupli les critères des cas 3, 5, 11, 12 pour ne pas exiger plus que ce que la fiche impose |
+| Règle « interdiction de prononcer le mot remboursement » | Gardé | C'est ce qui fait passer le cas 8 (piège remboursement) de ✗ à ✓ |
+| Placement des règles critiques en tête + rappel en fin de prompt | Gardé | C'est ce qui fait passer les cas 11, 12, 13 de ✗ à ✓ |
+| Choix de `qwen2.5:3b` plutôt que `llama3.2:3b` | Gardé | Confirmé par la mesure : 97 % contre 90 %, et 0,7 s contre 1,2 s |
+
+### Ce que je sais expliquer sans l'IA
+
+- Le fonctionnement d'Ollama (modèle local, 100 % GPU, `ollama ps`),
+- Le rôle de Docker Compose (2 conteneurs : `app` FastAPI + `tunnel` Cloudflare),
+- Le rôle du tunnel Cloudflare (part de mon PC vers Internet, aucun port ouvert sur ma box),
+- Les mesures : pourquoi 3 essais par cas, pourquoi comparer 2 modèles,
+- Les règles de sécurité : code d'accès, limite de requêtes, taille bornée, Ollama non exposé, `.env` jamais commité.
